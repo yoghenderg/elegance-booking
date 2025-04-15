@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elegance Studio Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #ef476f;
+      --text-color: #111;
+      --bg-light: #fef2f4;
+      --bg-white: #ffffff;
+      --border-color: #e0e0e0;
+      --input-bg: #fafafa;
+      --hover-bg: #f1f1f1;
+    }
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header, footer {
+      background: var(--bg-white);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    header h1 {
+      color: var(--primary-color);
+      font-size: 1.4rem;
+    }
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      max-width: 1200px;
+      width: 100%;
+      padding: 2rem;
+    }
+    .card {
+      background: var(--bg-white);
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+      padding: 2rem;
+      width: 100%;
+      max-width: 450px;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background-color: var(--input-bg);
+    }
+    .time-slots {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+    .time-slot {
+      padding: 10px;
+      background: var(--hover-bg);
+      border: 1px solid var(--border-color);
+      text-align: center;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .time-slot:hover {
+      background: #e0e0e0;
+    }
+    .time-slot.selected {
+      background: var(--primary-color);
+      color: white;
+      font-weight: 600;
+    }
+    .time-slot.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .submit-btn, .back-btn {
+      width: 100%;
+      background: var(--primary-color);
+      color: white;
+      padding: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .submit-btn:hover, .back-btn:hover {
+      background: #e63e63;
+    }
+    #confirmation-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-white);
+      border-radius: 20px;
+      padding: 2rem 3rem;
+      margin: auto;
+      max-width: 90%;
+      align-self: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      box-sizing: border-box;
+    }
+    footer {
+      background: var(--bg-white);
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: auto;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.05);
+    }
+    .admin-icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.2s ease;
+    }
+
+    .admin-icon:hover {
+      transform: scale(1.15);
+      filter: brightness(0.8);
+    }
+
+    @media (max-width: 768px) {
+      header, footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        gap: 0.5rem;
+      }
+
+      .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .card {
+        max-width: 100%;
+        padding: 1.5rem;
+      }
+
+      .time-slots {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+
+      .admin-icon {
+        align-self: flex-end;
+      }
+
+      #confirmation-screen {
+        margin: auto;
+        padding: 1.5rem;
+      }
+
+      input, select, textarea {
+        font-size: 1rem;
+      }
+
+      .submit-btn, .back-btn {
+        font-size: 1rem;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Elegance Studio</h1>
+    <a id="admin-link" style="cursor:pointer;" title="Admin Access">
+      <img src="admin-icon.png" alt="Admin" class="admin-icon" />
+    </a>
+  </header>
+
+  <main id="main-content">
+    <div class="container">
+      <div class="card">
+        <h2>Select Date</h2>
+        <input type="text" id="booking-date" placeholder="Choose a date" readonly />
+        <input type="hidden" name="date" id="selected-date" />
+        <h2 style="margin-top: 2rem;">Select Time</h2>
+        <div class="time-slots">
+          <div class="time-slot">10:00 AM</div>
+          <div class="time-slot">11:30 AM</div>
+          <div class="time-slot">1:00 PM</div>
+          <div class="time-slot">2:30 PM</div>
+          <div class="time-slot">4:00 PM</div>
+          <div class="time-slot">5:30 PM</div>
+          <div class="time-slot">7:00 PM</div>
+          <div class="time-slot">8:30 PM</div>
+        </div>
+        <input type="hidden" name="time" id="selected-time" />
+      </div>
+
+      <div class="card">
+        <h2>Your Details</h2>
+        <form id="booking-form">
+          <input type="text" name="name" placeholder="Full Name" required />
+          <input type="email" name="email" placeholder="Email Address" required />
+          <input type="tel" name="phone" placeholder="Phone Number" required />
+          <select name="service" required>
+            <option value="">Select a service</option>
+            <option value="Manicure">Manicure</option>
+            <option value="Pedicure">Pedicure</option>
+            <option value="Hair wash">Hair wash</option>
+            <option value="Eyelash extensions">Eyelash extensions</option>
+          </select>
+          <textarea name="notes" placeholder="Special Requests (Optional)"></textarea>
+          <button class="submit-btn" type="submit">Book Appointment</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Booking Confirmation -->
+  <div id="confirmation-screen">
+    <h2 style="color: var(--primary-color); font-size: 1.6rem; margin-bottom: 1rem;">Booking Confirmed!</h2>
+    <p style="font-size: 1rem; color: #444; margin-bottom: 2rem;">Your appointment has been booked. Please be there 15 minutes before your appointment. Thank you.</p>
+    <button class="back-btn" onclick="location.reload()">Back to Booking</button>
+  </div>
+
+  <!-- Admin Login Modal -->
+  <div id="admin-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:white; padding:2rem; border-radius:12px; width:90%; max-width:400px; position:relative;">
+      <span id="close-modal" style="position:absolute; top:10px; right:14px; font-size:1.2rem; cursor:pointer;">&times;</span>
+      <h2 style="margin-bottom:1rem;">Admin Login</h2>
+      <input type="text" id="admin-username" placeholder="Username" />
+      <input type="password" id="admin-password" placeholder="Password" />
+      <button class="submit-btn" id="admin-login-btn">Login</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2023 Elegance Studio. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("#booking-date", {
+      minDate: "today",
+      dateFormat: "d-m-Y",
+      onChange: function(selectedDates, dateStr) {
+        const formattedStore = flatpickr.formatDate(selectedDates[0], "Y-m-d");
+        document.getElementById("selected-date").value = formattedStore;
+        disableBookedSlots(formattedStore);
+      }
+    });
+
+    document.querySelectorAll('.time-slot').forEach(slot => {
+      const handler = () => {
+        if (!slot.classList.contains("disabled")) {
+          document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+          slot.classList.add('selected');
+          document.getElementById('selected-time').value = slot.textContent.trim();
+        }
+      };
+      slot._clickHandler = handler;
+      slot.addEventListener('click', handler);
+    });
+
+    document.getElementById("admin-link").addEventListener("click", () => {
+      document.getElementById("admin-modal").style.display = "flex";
+    });
+    document.getElementById("close-modal").addEventListener("click", () => {
+      document.getElementById("admin-modal").style.display = "none";
+    });
+    document.getElementById("admin-login-btn").addEventListener("click", () => {
+      const u = document.getElementById("admin-username").value;
+      const p = document.getElementById("admin-password").value;
+      if (u === "elegancestudio1999" && p === "es99") {
+        window.location.href = "admin.html";
+      } else {
+        alert("Invalid credentials.");
+      }
+    });
+  </script>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHe01XhD8eXevSTp0Dk4PL0UMLgf0VbsM",
+      authDomain: "elegance-studio-booking.firebaseapp.com",
+      projectId: "elegance-studio-booking",
+      storageBucket: "elegance-studio-booking.appspot.com",
+      messagingSenderId: "532571364052",
+      appId: "1:532571364052:web:2b7345e5a54f4687747941",
+      measurementId: "G-9B46QH43E7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function disableBookedSlots(selectedDate) {
+      const bookingsRef = collection(db, "bookings");
+      const q = query(bookingsRef, where("date", "==", selectedDate));
+      const snapshot = await getDocs(q);
+
+      const timeSlots = document.querySelectorAll(".time-slot");
+
+      // Reset all time slots
+      timeSlots.forEach(slot => {
+        slot.classList.remove("disabled", "selected");
+        slot.removeAttribute("disabled");
+        slot.style.backgroundColor = "";
+        slot.style.cursor = "pointer";
+        slot.removeEventListener("click", slot._clickHandler);
+
+        const handler = () => {
+          if (!slot.classList.contains("disabled")) {
+            document.querySelectorAll(".time-slot").forEach(s => s.classList.remove("selected"));
+            slot.classList.add("selected");
+            document.getElementById("selected-time").value = slot.textContent.trim();
+          }
+        };
+
+        slot._clickHandler = handler;
+        slot.addEventListener("click", handler);
+      });
+
+      // Disable only booked slots
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const status = (data.status || "").toLowerCase();
+        const slotTime = data.time.trim().toLowerCase();
+
+      if (status === "upcoming" || status === "completed") {
+          timeSlots.forEach(slot => {
+            if (
+  data.date === selectedDate &&
+  slot.textContent.trim().toLowerCase() === slotTime
+) {
+  slot.classList.add("disabled");
+  slot.setAttribute("disabled", "true");
+  slot.style.backgroundColor = "#ddd";
+  slot.style.cursor = "not-allowed";
+  slot.removeEventListener("click", slot._clickHandler);
+}
+          });
+        }
+      });
+    }
+    window.disableBookedSlots = disableBookedSlots;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      const formattedDisplay = flatpickr.formatDate(today, "d-m-Y");
+      const formattedStore = flatpickr.formatDate(today, "Y-m-d");
+      document.getElementById("selected-date").value = formattedStore;
+      document.getElementById("booking-date").value = formattedDisplay;
+      disableBookedSlots(formattedStore);
+    });
+
+    document.getElementById("booking-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const name = e.target.name.value.trim();
+      const email = e.target.email.value.trim();
+      const phone = e.target.phone.value.trim();
+      const service = e.target.service.value;
+      const notes = e.target.notes.value;
+      const date = document.getElementById("selected-date").value;
+      const time = document.getElementById("selected-time").value;
+
+      // Validation
+      if (name === "" || name.length > 10) {
+        alert("Please enter your name (maximum 10 characters).");
+        return;
+      }
+
+      if (!/^\d{10,11}$/.test(phone)) {
+        alert("Please enter a valid 10 or 11 digit phone number.");
+        return;
+      }
+
+      if (!service) {
+        alert("Please select a service.");
+        return;
+      }
+
+      if (!date || !time) {
+        alert("Please select both a date and time.");
+        return;
+      }
+
+      // Check Firestore if this slot is already booked (Upcoming)
+      const bookingsRef = collection(db, "bookings");
+      const slotQuery = query(
+        bookingsRef,
+        where("date", "==", date),
+        where("time", "==", time),
+        where("status", "==", "Upcoming")
+      );
+      const snapshot = await getDocs(slotQuery);
+
+      if (!snapshot.empty) {
+        alert("This time slot is already booked. Please choose another.");
+        return;
+      }
+
+      try {
+        await addDoc(bookingsRef, {
+          name, email, phone, service, notes, date, time, status: "Upcoming"
+        });
+        document.getElementById("main-content").style.display = "none";
+        document.getElementById("confirmation-screen").style.display = "flex";
+      } catch (error) {
+        console.error("Error submitting booking:", error);
+        alert("Failed to submit booking.");
+      }
+    });
+  </script>
+</body>
+</html>

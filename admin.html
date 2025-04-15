@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elegance Studio Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #ef476f;
+      --success-color: #32c671;
+      --error-color: #ff4f4f;
+      --text-color: #111;
+      --bg-light: #fef2f4;
+      --bg-white: #ffffff;
+      --border-color: #e0e0e0;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: var(--bg-light);
+      padding: 1.5rem;
+      margin: 0;
+    }
+    header {
+      background: var(--bg-white);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      height: 70px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      margin: -1.5rem -1.5rem 2rem;
+    }
+    header h1 {
+      color: var(--primary-color);
+    }
+    .dashboard {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: var(--bg-white);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .dashboard h2 {
+      margin-bottom: 1rem;
+    }
+    .summary-cards {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .summary-card {
+      background: var(--bg-white);
+      border: 2px solid var(--primary-color);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      width: 160px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .filters input,
+    .filters select {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-spacing: 0 10px;
+    }
+    th, td {
+      text-align: left;
+      padding: 1rem 1rem;
+      background: #fff;
+      border-bottom: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+    tbody tr {
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    tbody tr:hover td {
+      background-color: #dea4b1;
+      color: white;
+    }
+    tbody tr {
+      transition: background-color 0.3s ease;
+    }
+    .status {
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .status.upcoming { background: #e4ecff; color: #3c5ce6; }
+    .status.completed { background: #e2fbe8; color: var(--success-color); }
+    .status.cancelled { background: #ffe5e5; color: var(--error-color); }
+    .actions a {
+      margin-right: 0.5rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .actions .done { color: var(--success-color); }
+    .actions .cancel { color: var(--error-color); }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      font-weight: 500;
+      cursor: pointer;
+      padding-left: 1rem;
+    }
+    tr.fade-out {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.4s ease;
+    }
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        height: auto;
+        padding: 1rem;
+      }
+
+      .summary-cards {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      .summary-card {
+        width: 45%;
+        min-width: 100px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        padding: 0.6rem;
+      }
+
+      .filters {
+        justify-content: center;
+      }
+
+      .dashboard {
+        padding: 1rem;
+        margin: 1rem;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .summary-card {
+        width: 80%;
+        margin-bottom: 1rem;
+      }
+
+      .back-link {
+        margin-bottom: 1rem;
+        display: block;
+        text-align: center;
+      }
+
+      #pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .filters input {
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHe01XhD8eXevSTp0Dk4PL0UMLgf0VbsM",
+      authDomain: "elegance-studio-booking.firebaseapp.com",
+      projectId: "elegance-studio-booking",
+      storageBucket: "elegance-studio-booking.appspot.com",
+      messagingSenderId: "532571364052",
+      appId: "1:532571364052:web:2b7345e5a54f4687747941",
+      measurementId: "G-9B46QH43E7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadBookings() {
+      const bookingsRef = collection(db, "bookings");
+      const snapshot = await getDocs(bookingsRef);
+      const bookings = [];
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        bookings.push({
+          id: docSnap.id,
+          ...data
+        });
+      });
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayCount = bookings.filter(b => b.date === todayStr && b.status === 'Upcoming').length;
+      const completedCount = bookings.filter(b => b.status === 'Completed').length;
+      const cancelledCount = bookings.filter(b => b.status === 'Cancelled').length;
+
+      document.getElementById("today-count").innerText = `Today\n${todayCount}`;
+      document.getElementById("completed-count").innerText = `Completed\n${completedCount}`;
+      document.getElementById("cancelled-count").innerText = `Cancelled\n${cancelledCount}`;
+
+      const statusOrder = { "Upcoming": 0, "Completed": 1, "Cancelled": 2 };
+      bookings.sort((a, b) => {
+        const statusDiff = statusOrder[a.status || "Upcoming"] - statusOrder[b.status || "Upcoming"];
+        if (statusDiff !== 0) return statusDiff;
+
+        const parseDateTime = (dateStr, timeStr) => {
+          const [hour, minPart] = timeStr.split(":");
+          const [minute, period] = minPart.split(" ");
+          let h = parseInt(hour);
+          if (period === "PM" && h !== 12) h += 12;
+          if (period === "AM" && h === 12) h = 0;
+          return new Date(`${dateStr}T${String(h).padStart(2, '0')}:${minute}`);
+        };
+
+        return parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time);
+      });
+
+      const filtered = applyFilters(bookings);
+      const entriesPerPage = parseInt(document.getElementById("entriesPerPage").value) || 5;
+      let currentPage = 1;
+
+      function renderTablePage(page = 1) {
+        const tableBody = document.querySelector("tbody");
+        tableBody.innerHTML = "";
+        const start = (page - 1) * entriesPerPage;
+        const paginated = filtered.slice(start, start + entriesPerPage);
+
+        paginated.forEach(data => {
+          const tr = document.createElement("tr");
+          const statusClass = data.status === "Completed" ? "completed"
+                            : data.status === "Cancelled" ? "cancelled" : "upcoming";
+
+          tr.innerHTML = `
+            <td>${data.date}</td>
+            <td>${data.time}</td>
+            <td>${data.name}</td>
+            <td>${data.service}</td>
+            <td><span class="status ${statusClass}">${data.status || "Upcoming"}</span></td>
+            <td class="actions">
+              ${data.status === "Upcoming" ? `<a class="done" data-id="${data.id}">Mark Done</a><a class="cancel" data-id="${data.id}">Cancel</a>` : ""}
+            </td>
+          `;
+          tableBody.appendChild(tr);
+
+          tr.addEventListener("click", async () => {
+            const docSnap = (await getDocs(bookingsRef)).docs.find(d => d.id === data.id);
+            if (docSnap) {
+              const bData = docSnap.data();
+              document.getElementById("booking-details").innerHTML = `
+                <p><strong>Name:</strong> ${bData.name}</p>
+                <p><strong>Email:</strong> ${bData.email || "-"}</p>
+                <p><strong>Phone:</strong> ${bData.phone || "-"}</p>
+                <p><strong>Service:</strong> ${bData.service}</p>
+                <p><strong>Date:</strong> ${bData.date}</p>
+                <p><strong>Time:</strong> ${bData.time}</p>
+                <p><strong>Status:</strong> ${bData.status || "Upcoming"}</p>
+                <p><strong>Notes:</strong> ${bData.notes || "-"}</p>
+              `;
+              document.getElementById("view-modal").style.display = "flex";
+            }
+          });
+        });
+
+        document.querySelectorAll(".done").forEach(btn =>
+          btn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute("data-id");
+            const row = btn.closest("tr");
+            btn.style.display = "none";
+            row.classList.add("fade-out");
+            setTimeout(async () => {
+              await updateDoc(doc(db, "bookings", id), { status: "Completed" });
+              loadBookings();
+            }, 400);
+          })
+        );
+        document.querySelectorAll(".cancel").forEach(btn =>
+          btn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute("data-id");
+            const row = btn.closest("tr");
+            btn.style.display = "none";
+            row.classList.add("fade-out");
+            setTimeout(async () => {
+              await updateDoc(doc(db, "bookings", id), { status: "Cancelled" });
+              loadBookings();
+            }, 400);
+          })
+        );
+      }
+
+      function renderPagination(totalPages) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.style.padding = "0.5rem 1rem";
+          btn.style.border = "1px solid var(--border-color)";
+          btn.style.borderRadius = "6px";
+          btn.style.cursor = "pointer";
+          btn.style.background = i === currentPage ? "var(--primary-color)" : "white";
+          btn.style.color = i === currentPage ? "white" : "black";
+
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            renderTablePage(i);
+            renderPagination(totalPages);
+          });
+
+          pagination.appendChild(btn);
+        }
+      }
+
+      const totalPages = Math.ceil(filtered.length / entriesPerPage);
+      renderTablePage(currentPage);
+      renderPagination(totalPages);
+    }
+
+    function applyFilters(bookings) {
+      const searchInput = document.querySelector('.filters input').value.toLowerCase();
+      const selectedService = document.querySelector('.filters select:nth-of-type(1)').value;
+      const selectedStatus = document.querySelector('.filters select:nth-of-type(2)').value;
+
+      return bookings.filter(b => {
+        const matchesSearch = b.name.toLowerCase().includes(searchInput) || b.phone?.toLowerCase().includes(searchInput);
+        const matchesService = selectedService === "All Services" || b.service === selectedService;
+        const matchesStatus = selectedStatus === "All Status" || b.status === selectedStatus;
+        return matchesSearch && matchesService && matchesStatus;
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadBookings();
+      document.getElementById("close-view-modal").addEventListener("click", () => {
+        document.getElementById("view-modal").style.display = "none";
+      });
+
+      document.querySelectorAll('.filters input, .filters select').forEach(el => {
+        el.addEventListener('input', loadBookings);
+        el.addEventListener('change', loadBookings);
+      });
+
+      document.getElementById("entriesPerPage").addEventListener("change", loadBookings);
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Elegance Studio</h1>
+  </header>
+
+  <div class="summary-cards">
+    <div class="summary-card" id="today-count">Today</div>
+    <div class="summary-card" id="completed-count">Completed</div>
+    <div class="summary-card" id="cancelled-count">Cancelled</div>
+  </div>
+  
+  <div class="dashboard">
+    <div class="back-link" onclick="window.location.href='index.html'">← Back to Booking</div>
+    <h2>Admin Dashboard</h2>
+
+    <div class="filters">
+      <input type="text" placeholder="Search...">
+      <select>
+        <option>All Services</option>
+        <option>Manicure</option>
+        <option>Pedicure</option>
+        <option>Gel Nails</option>
+      </select>
+      <select>
+        <option>All Status</option>
+        <option>Upcoming</option>
+        <option>Completed</option>
+        <option>Cancelled</option>
+      </select>
+    </div>
+    <div style="margin-bottom: 1rem;">
+      Show 
+      <select id="entriesPerPage" style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+        <option value="5" selected>5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="100">100</option>
+      </select>
+      entries
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>DATE</th>
+          <th>TIME</th>
+          <th>NAME</th>
+          <th>SERVICE</th>
+          <th>STATUS</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="pagination" style="margin-top: 1rem; display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;"></div>
+  </div>
+
+  <div id="view-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:#fff; padding:2rem; border-radius:20px; max-width:400px; width:90%; position:relative; box-shadow: 0 8px 24px rgba(0,0,0,0.2); font-family: 'Montserrat', sans-serif;">
+      <span id="close-view-modal" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.4rem; font-weight:bold;">&times;</span>
+      <h2 style="color: #ef476f; font-size: 1.5rem; margin-bottom: 1rem;">Booking Details</h2>
+      <div id="booking-details" style="line-height: 1.6; font-size: 0.95rem; color: #333;"></div>
+    </div>
+  </div>
+</body>
+</html>

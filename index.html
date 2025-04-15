@@ -67,21 +67,13 @@
       flex-direction: column;
       min-height: 100vh;
     }
-    header {
+    header, footer {
       background: var(--bg-white);
       padding: 1rem 2rem;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-      position: relative;
-    }
-    .header-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      position: relative;
     }
     header h1 {
       color: var(--primary-color);
@@ -194,8 +186,9 @@
       box-shadow: 0 -1px 4px rgba(0,0,0,0.05);
     }
     .admin-icon {
-      position: absolute;
-      right: 0;
+      width: 24px;
+      height: 24px;
+      transition: transform 0.2s ease;
     }
 
     .admin-icon:hover {
@@ -250,12 +243,10 @@
 </head>
 <body>
   <header>
-    <div class="header-content">
-      <h1>Elegance Studio</h1>
-      <a id="admin-link" style="cursor:pointer;" title="Admin Access">
-        <img src="admin-icon.png" alt="Admin" class="admin-icon" />
-      </a>
-    </div>
+    <h1>Elegance Studio</h1>
+    <a id="admin-link" style="cursor:pointer;" title="Admin Access">
+      <img src="admin-icon.png" alt="Admin" class="admin-icon" />
+    </a>
   </header>
 
   <main id="main-content">

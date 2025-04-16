@@ -469,6 +469,44 @@ tbody td::before {
       document.getElementById("entriesPerPage").addEventListener("change", loadBookings);
     });
   </script>
+  
+  <script type="module">
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging.js";
+  
+    const messaging = getMessaging();
+  
+    // Request notification permission and get FCM token
+    async function requestNotificationPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        const vapidKey = "BNtd_pxBUFqKUqIXc4B-slnp4XTPSsV0D8nCDiT8WEAQANAKnq2-X-29RNrddlj4X5QU5Um1-St9_RfKwuDqgMk";
+        const token = await getToken(messaging, { vapidKey });
+        console.log("FCM Token:", token);
+      } else {
+        console.log("Notification permission denied");
+      }
+    }
+  
+    requestNotificationPermission();
+  
+    onMessage(messaging, (payload) => {
+      console.log("Message received: ", payload);
+      alert("🔔 New Booking Received!");
+    });
+  </script>
+  
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('firebase-messaging-sw.js')
+        .then(function (registration) {
+          console.log("Service Worker registered:", registration);
+        })
+        .catch(function (err) {
+          console.error("Service Worker registration failed:", err);
+        });
+    }
+  </script>
 </head>
 <body>
   <header>

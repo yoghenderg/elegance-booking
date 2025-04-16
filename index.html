@@ -489,26 +489,28 @@
       }
 
       try {
-        await addDoc(bookingsRef, {
-          name, email, phone, service, notes, date, time, status: "Upcoming"
-        });
-        // Send push notification to admin
-        fetch("https://elegance-notifier.onrender.com/notify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            title: "New Booking 📅",
-            message: `You have a new booking at ${time} on ${date}.`
-          })
-        }).catch(err => console.error("Notification failed:", err));
-        document.getElementById("main-content").style.display = "none";
-        document.getElementById("confirmation-screen").style.display = "flex";
-      } catch (error) {
-        console.error("Error submitting booking:", error);
-        alert("Failed to submit booking.");
-      }
+  await addDoc(bookingsRef, {
+    name, email, phone, service, notes, date, time, status: "Upcoming"
+  });
+
+  // Send push notification to admin
+  fetch("https://elegance-notifier.onrender.com/notify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      title: "New Booking 📅",
+      message: `You have a new booking at ${time} on ${date}.`
+    })
+  }).catch(err => console.error("Notification failed:", err));
+
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("confirmation-screen").style.display = "flex";
+} catch (error) {
+  console.error("Error submitting booking:", error);
+  alert("Failed to submit booking.");
+}
     });
   </script>
 </body>

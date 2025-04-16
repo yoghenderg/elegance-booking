@@ -144,61 +144,93 @@
       transform: translateY(10px);
       transition: all 0.4s ease;
     }
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-        height: auto;
-        padding: 1rem;
-      }
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          height: auto;
+          padding: 1rem;
+        }
  
-      .summary-cards {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-      }
+        .summary-cards {
+          display: flex;
+          flex-direction: row;
+          overflow-x: auto;
+          gap: 1rem;
+          padding: 1rem 0;
+          justify-content: flex-start;
+        }
  
-      .dashboard {
-        padding: 1rem;
-        margin: 1rem;
-        overflow-x: auto;
-      }
+        .summary-card {
+          min-width: 120px;
+          flex-shrink: 0;
+        }
  
-      .filters {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-      }
+        .dashboard {
+          padding: 0;
+          margin: 0 auto;
+          width: 100%;
+          max-width: 100%;
+          box-shadow: none;
+        }
  
-      table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.5rem;
+          padding: 0 1rem;
+          margin-bottom: 1rem;
+        }
  
-      #view-modal > div {
-        width: 95% !important;
-        max-width: 95% !important;
-        padding: 1rem !important;
-      }
+        table {
+          width: 100%;
+          display: block;
+          border-collapse: unset;
+        }
  
-      .back-link {
-        margin-bottom: 1rem;
-        display: block;
-        text-align: left;
-      }
+        thead {
+          display: none;
+        }
  
-      #pagination {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
+        tbody tr {
+          display: flex;
+          flex-direction: column;
+          background: #fff;
+          margin: 0 1rem 1rem;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          padding: 1rem;
+        }
  
-      .filters input {
-        margin-bottom: 1rem;
+        tbody td {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.4rem 0;
+          border: none;
+          font-size: 0.95rem;
+        }
+ 
+        tbody td::before {
+          content: attr(data-label);
+          font-weight: 600;
+          color: var(--primary-color);
+          margin-right: 0.5rem;
+          min-width: 100px;
+        }
+ 
+        #pagination {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+ 
+        #view-modal > div {
+          width: 95% !important;
+          max-width: 95% !important;
+          padding: 1rem !important;
+        }
       }
-    }
   </style>
 
   <script type="module">
@@ -273,12 +305,12 @@
                             : data.status === "Cancelled" ? "cancelled" : "upcoming";
 
           tr.innerHTML = `
-            <td>${data.date}</td>
-            <td>${data.time}</td>
-            <td>${data.name}</td>
-            <td>${data.service}</td>
-            <td><span class="status ${statusClass}">${data.status || "Upcoming"}</span></td>
-            <td class="actions">
+            <td data-label="Date">${data.date}</td>
+            <td data-label="Time">${data.time}</td>
+            <td data-label="Name">${data.name}</td>
+            <td data-label="Service">${data.service}</td>
+            <td data-label="Status"><span class="status ${statusClass}">${data.status || "Upcoming"}</span></td>
+            <td class="actions" data-label="Actions">
               ${data.status === "Upcoming" ? `<a class="done" data-id="${data.id}">Mark Done</a><a class="cancel" data-id="${data.id}">Cancel</a>` : ""}
             </td>
           `;

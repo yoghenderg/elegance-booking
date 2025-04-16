@@ -312,9 +312,9 @@ tbody td::before {
       const completedCount = bookings.filter(b => b.status === 'Completed').length;
       const cancelledCount = bookings.filter(b => b.status === 'Cancelled').length;
 
-      document.getElementById("today-count").innerText = `Today\n${todayCount}`;
-      document.getElementById("completed-count").innerText = `Completed\n${completedCount}`;
-      document.getElementById("cancelled-count").innerText = `Cancelled\n${cancelledCount}`;
+      document.getElementById("today-count").innerHTML = `Today<br><strong>${todayCount}</strong>`;
+document.getElementById("completed-count").innerHTML = `Completed<br><strong>${completedCount}</strong>`;
+document.getElementById("cancelled-count").innerHTML = `Cancelled<br><strong>${cancelledCount}</strong>`;
 
       const statusOrder = { "Upcoming": 0, "Completed": 1, "Cancelled": 2 };
       bookings.sort((a, b) => {
@@ -524,9 +524,9 @@ tbody td::before {
   </header>
 
   <div class="summary-cards">
-    <div class="summary-card" id="today-count">Today</div>
-    <div class="summary-card" id="completed-count">Completed</div>
-    <div class="summary-card" id="cancelled-count">Cancelled</div>
+    <div class="summary-card" id="today-count">Today<br><strong>0</strong></div>
+<div class="summary-card" id="completed-count">Completed<br><strong>0</strong></div>
+<div class="summary-card" id="cancelled-count">Cancelled<br><strong>0</strong></div>
   </div>
   
   <div class="dashboard">

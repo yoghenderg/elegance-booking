@@ -115,6 +115,10 @@
       background-color: #dea4b1;
       color: white;
     }
+    .active-row {
+      background-color: #ffe8ed !important;
+      box-shadow: 0 0 12px rgba(239, 71, 111, 0.3);
+    }
     tbody tr {
       transition: background-color 0.3s ease;
     }
@@ -333,6 +337,11 @@ tbody td::before {
             </td>
           `;
           tableBody.appendChild(tr);
+          
+          tr.addEventListener("click", () => {
+            document.querySelectorAll("tbody tr").forEach(row => row.classList.remove("active-row"));
+            tr.classList.add("active-row");
+          });
 
           tr.addEventListener("click", async () => {
             const docSnap = (await getDocs(bookingsRef)).docs.find(d => d.id === data.id);

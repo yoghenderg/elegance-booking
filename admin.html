@@ -152,53 +152,49 @@
         height: auto;
         padding: 1rem;
       }
-
+ 
       .summary-cards {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         gap: 1rem;
       }
-
-      .summary-card {
-        width: 45%;
-        min-width: 100px;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-        padding: 0.6rem;
-      }
-
-      .filters {
-        justify-content: center;
-      }
-
+ 
       .dashboard {
         padding: 1rem;
         margin: 1rem;
+        overflow-x: auto;
       }
-
+ 
+      .filters {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+ 
       table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
       }
-
-      .summary-card {
-        width: 80%;
-        margin-bottom: 1rem;
+ 
+      #view-modal > div {
+        width: 95% !important;
+        max-width: 95% !important;
+        padding: 1rem !important;
       }
-
+ 
       .back-link {
         margin-bottom: 1rem;
         display: block;
         text-align: left;
       }
-
+ 
       #pagination {
         flex-wrap: wrap;
         justify-content: center;
       }
-
+ 
       .filters input {
         margin-bottom: 1rem;
       }

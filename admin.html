@@ -138,23 +138,15 @@
     .actions .done { color: var(--success-color); }
     .actions .cancel { color: var(--error-color); }
 
-.back-link {
-  display: inline-block;
-  background: var(--primary-color);
-  color: white;
-  font-weight: bold;
-  padding: 0.6rem;
-  border-radius: 50%;
-  font-size: 1.1rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.3s ease;
-  margin: 0 1rem 1.5rem;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 1.6;
-}
+    .back-link {
+      display: inline-block;
+      color: var(--primary-color);
+      font-weight: 500;
+      cursor: pointer;
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
 .back-link:hover {
   background: #d03e61;
 }
@@ -172,11 +164,7 @@
           height: auto;
           padding: 1rem;
         }
-        .back-link {
-  margin: 1rem auto;
-  display: block;
-  width: fit-content;
-}
+ 
  
         .summary-cards {
           display: flex;
@@ -464,7 +452,7 @@ tbody td::before {
   
   <div class="dashboard">
     <div class="back-link" onclick="window.location.href='index.html'">
-      ←
+      &lt; Back to Home
     </div>
     <h2>Admin Dashboard</h2>
 

@@ -482,6 +482,17 @@ tbody td::before {
         const vapidKey = "BNtd_pxBUFqKUqIXc4B-slnp4XTPSsV0D8nCDiT8WEAQANAKnq2-X-29RNrddlj4X5QU5Um1-St9_RfKwuDqgMk";
         const token = await getToken(messaging, { vapidKey });
         console.log("FCM Token:", token);
+        // Subscribe to topic "adminNotifications"
+        fetch('/subscribeToTopic', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ token, topic: 'adminNotifications' })
+        })
+        .then(response => response.json())
+        .then(data => console.log('Subscribed to topic:', data))
+        .catch(err => console.error('Error subscribing to topic:', err));
       } else {
         console.log("Notification permission denied");
       }

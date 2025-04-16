@@ -49,9 +49,10 @@
     .dashboard {
   padding: 1rem;
   margin: 1rem;
-  width: auto;
-  max-width: 100%;
-  box-shadow: none;
+  width: 100%;
+  background: #ffffff; /* ⬅️ Add this */
+  border-radius: 16px;  /* ⬅️ Optional for nicer look */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
     .dashboard h2 {
       margin-bottom: 1rem;
@@ -132,14 +133,24 @@
     }
     .actions .done { color: var(--success-color); }
     .actions .cancel { color: var(--error-color); }
-    .back-link {
-      display: inline-block;
-      margin-bottom: 1rem;
-      color: var(--primary-color);
-      font-weight: 500;
-      cursor: pointer;
-      padding-left: 1rem;
-    }
+
+   .back-link {
+  display: inline-block;
+  background: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-bottom: 1.2rem;
+}
+
+.back-link:hover {
+  background: #d03e61;
+}
     tr.fade-out {
       opacity: 0;
       transform: translateY(10px);
@@ -434,7 +445,9 @@ tbody td::before {
   </div>
   
   <div class="dashboard">
-    <div class="back-link" onclick="window.location.href='index.html'">←</div>
+    <div class="back-link" onclick="window.location.href='index.html'">
+      ← Back to Home
+    </div>
     <h2>Admin Dashboard</h2>
 
     <div class="filters">

@@ -314,15 +314,33 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
-    flatpickr("#booking-date", {
-      minDate: "today",
-      dateFormat: "d-m-Y",
-      onChange: function(selectedDates, dateStr) {
-        const formattedStore = flatpickr.formatDate(selectedDates[0], "Y-m-d");
-        document.getElementById("selected-date").value = formattedStore;
-        disableBookedSlots(formattedStore);
+    const today = new Date();
+    const formattedDisplay = flatpickr.formatDate(today, "d-m-Y");
+    const formattedStore = flatpickr.formatDate(today, "Y-m-d");
+ 
+    document.addEventListener("DOMContentLoaded", () => {
+      const bookingInput = document.getElementById("booking-date");
+      const hiddenDate = document.getElementById("selected-date");
+ 
+      if (bookingInput && hiddenDate) {
+        bookingInput.value = formattedDisplay;
+        hiddenDate.value = formattedStore;
       }
+ 
+      flatpickr("#booking-date", {
+        minDate: "today",
+        dateFormat: "d-m-Y",
+        defaultDate: today,
+        onChange: function(selectedDates, dateStr) {
+          const formattedStore = flatpickr.formatDate(selectedDates[0], "Y-m-d");
+          hiddenDate.value = formattedStore;
+          disableBookedSlots(formattedStore);
+        }
+      });
+ 
+      disableBookedSlots(formattedStore); // Load slots for today by default
     });
+  </script>
 
     document.querySelectorAll('.time-slot').forEach(slot => {
       const handler = () => {

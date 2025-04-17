@@ -46,8 +46,8 @@
       --text-color: #111;
       --bg-light: #fef2f4;
       --bg-white: #ffffff;
-      --border-color: #e0e0e0;
-      --input-bg: #fafafa;
+      --border-color: #e7a9a9;
+      --input-bg: #ffffff;
       --hover-bg: #f1f1f1;
     }
     html, body {
@@ -61,11 +61,12 @@
       padding: 0;
     }
     body {
-      background-color: var(--bg-light);
+      background-size: 97%;
       color: var(--text-color);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      background-color: #fff0f5; /* example: light pink */
     }
     header, footer {
       background: var(--bg-white);
@@ -73,7 +74,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(255, 0, 0, 0.05);
     }
     header h1 {
       color: var(--primary-color);
@@ -103,7 +104,7 @@
       padding: 2rem;
     }
     .card {
-      background: var(--bg-white);
+      background: rgba(242, 217, 217, 0.9); /* add semi-transparent white */
       border-radius: 20px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
       padding: 2rem;

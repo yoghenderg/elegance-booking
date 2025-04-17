@@ -249,7 +249,12 @@
   gap: 0.6rem;
         }
         tbody tr:active {
-          background-color: #ffe8ed !important;
+          background-color: #ef476f !important;
+        }
+        @media (hover: none) {
+          tbody tr:active td {
+            background-color: #ef476f !important;
+          }
         }
         tbody td {
   display: flex;

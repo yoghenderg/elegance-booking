@@ -523,19 +523,7 @@ document.getElementById("cancelled-count").innerHTML = `Cancelled<br><strong>${c
       alert("🔔 New Booking Received!");
     });
   </script>
-  
-  <script>
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('firebase-messaging-sw.js')
-        .then(function (registration) {
-          console.log("Service Worker registered:", registration);
-        })
-        .catch(function (err) {
-          console.error("Service Worker registration failed:", err);
-        });
-    }
-  </script>
+
 </head>
 <body>
   <button id="enable-notifications" style="display: none;">Enable Notifications</button>

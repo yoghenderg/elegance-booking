@@ -339,6 +339,7 @@ document.getElementById("cancelled-count").innerHTML = `Cancelled<br><strong>${c
 
         return parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time);
       });
+      bookings.reverse();
 
       const filtered = applyFilters(bookings);
       const entriesPerPage = parseInt(document.getElementById("entriesPerPage").value) || 5;
